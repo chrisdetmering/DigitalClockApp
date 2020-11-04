@@ -1,44 +1,29 @@
-document.addEventListener('DOMContentLoaded', () => { 
   const clockContainer = document.getElementById("time");
   const date = document.getElementById("date");
   const timeFormatButton = document.getElementById("set-time-format");
   let timeFormat = 12; 
 
-  timeFormatButton.addEventListener('click', event => { 
-    if (timeFormat === 12 ) { 
-      timeFormat = 24;
-      event.target.innerHTML = 'Standard Time';
-    } else { 
-      timeFormat = 12;
-      event.target.innerHTML = 'Military Time';
-    }
-    
-  })
-  
-  let now = new Date();
-  setCurrentClockTime(clockContainer, now, timeFormat);
-  date.innerHTML = now.toDateString();
-
   window.setInterval(() => { 
     let now = new Date();
-    setCurrentClockTime(clockContainer, now, timeFormat);
-  }, 1000)
+    setCurrentClockTime(clockContainer, now);
+    date.textContent = now.toDateString();
+  }, 10)
 
-})
 
-let setCurrentClockTime = (clock, now, timeFormat) => { 
+const setCurrentClockTime = (clock, now) => { 
   let hrs = now.getHours(); 
-  
-  clock.innerHTML = `${hours(hrs, timeFormat)}:${minutes(now)}:${seconds(now)}` + addAmOrPM(hrs, timeFormat)
+  let min = addLeadingZero(now.getMinutes());
+  let sec = addLeadingZero(now.getSeconds());
+  clock.textContent = `${hours(hrs)}:${min}:${sec}` + addAmOrPM(hrs, timeFormat)
 }
 
-let addAmOrPM = (hrs, timeFormat) => { 
+const addAmOrPM = (hrs) => { 
   let AM_OR_PM = hrs >= 12 ? ' PM' : ' AM';
   return timeFormat === 24 ? '' : AM_OR_PM
 }
 
 
-let hours = (hrs, timeFormat) => { 
+const hours = (hrs) => { 
   if (hrs === 0 && timeFormat === 12) { 
     return 12;
   } else { 
@@ -46,12 +31,18 @@ let hours = (hrs, timeFormat) => {
   }
 }
 
-let minutes = (time) => {
-  let minutes = time.getMinutes();
-  return minutes < 10 ? '0' + minutes : minutes;
+const addLeadingZero = time => {
+  return time < 10 ? '0' + time : time;
 }
 
-let seconds = (time) => { 
-  let seconds = time.getSeconds();
-  return seconds < 10 ? '0' + seconds : seconds;
-}
+
+timeFormatButton.addEventListener('click', event => { 
+  if (timeFormat === 12 ) { 
+    timeFormat = 24;
+    event.target.textContent = 'Standard Time';
+  } else { 
+    timeFormat = 12;
+    event.target.textContent = 'Military Time';
+  }
+  
+})
